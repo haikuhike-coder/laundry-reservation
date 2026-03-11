@@ -7,68 +7,133 @@
   <meta name="Generator" content="Cocoa HTML Writer">
   <meta name="CocoaVersion" content="2575.7">
   <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
   </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1">&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1">&lt;title&gt;Laundry Reservation&lt;/title&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;h1&gt;Laundry Reservation&lt;/h1&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;label&gt;Date&lt;/label&gt;</p>
-<p class="p1">&lt;input type="date" id="date"&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;br&gt;&lt;br&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;label&gt;Time&lt;/label&gt;</p>
-<p class="p1">&lt;select id="time"&gt;</p>
-<p class="p1">&lt;option&gt;18:00&lt;/option&gt;</p>
-<p class="p1">&lt;option&gt;19:00&lt;/option&gt;</p>
-<p class="p1">&lt;option&gt;20:00&lt;/option&gt;</p>
-<p class="p1">&lt;option&gt;21:00&lt;/option&gt;</p>
-<p class="p1">&lt;/select&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;br&gt;&lt;br&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;label&gt;Name&lt;/label&gt;</p>
-<p class="p1">&lt;input type="text" id="user"&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;br&gt;&lt;br&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;button onclick="reserve()"&gt;Reserve&lt;/button&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;script&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">function reserve(){</p>
-<p class="p2"><br></p>
-<p class="p1">const url = "https://script.google.com/macros/s/AKfycbypaF4kzybUo9w0B81mnEWBWmnFLF1oGIZ9mIaUOdNSh-S8-iDBwmA1IWthpYyXRv_d/exec";</p>
-<p class="p2"><br></p>
-<p class="p1">const data = {</p>
-<p class="p1">date: document.getElementById("date").value,</p>
-<p class="p1">time: document.getElementById("time").value,</p>
-<p class="p1">user: document.getElementById("user").value</p>
-<p class="p1">};</p>
-<p class="p2"><br></p>
-<p class="p1">fetch(url,{</p>
-<p class="p1">method:"POST",</p>
-<p class="p1">body: JSON.stringify(data)</p>
-<p class="p1">})</p>
-<p class="p1">.then(res=&gt;res.text())</p>
-<p class="p1">.then(data=&gt;alert("Reservation Complete"));</p>
-<p class="p2"><br></p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/script&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;meta charset="UTF-8"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;title&gt;Laundry Reservation&lt;/title&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;style&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">body{</span></p>
+<p class="p1"><span class="s1">font-family: Arial, sans-serif;</span></p>
+<p class="p1"><span class="s1">background:#f4f4f4;</span></p>
+<p class="p1"><span class="s1">text-align:center;</span></p>
+<p class="p1"><span class="s1">margin-top:50px;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">.container{</span></p>
+<p class="p1"><span class="s1">background:white;</span></p>
+<p class="p1"><span class="s1">width:320px;</span></p>
+<p class="p1"><span class="s1">margin:auto;</span></p>
+<p class="p1"><span class="s1">padding:25px;</span></p>
+<p class="p1"><span class="s1">border-radius:10px;</span></p>
+<p class="p1"><span class="s1">box-shadow:0 0 10px rgba(0,0,0,0.1);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">input,select,button{</span></p>
+<p class="p1"><span class="s1">width:100%;</span></p>
+<p class="p1"><span class="s1">padding:10px;</span></p>
+<p class="p1"><span class="s1">margin-top:10px;</span></p>
+<p class="p1"><span class="s1">font-size:16px;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">button{</span></p>
+<p class="p1"><span class="s1">background:#4CAF50;</span></p>
+<p class="p1"><span class="s1">color:white;</span></p>
+<p class="p1"><span class="s1">border:none;</span></p>
+<p class="p1"><span class="s1">cursor:pointer;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">button:hover{</span></p>
+<p class="p1"><span class="s1">background:#45a049;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;/style&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;body&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;div class="container"&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;h2&gt;Laundry Reservation&lt;/h2&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;label&gt;Date&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1">&lt;input type="date" id="date"&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;label&gt;Time&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1">&lt;select id="time"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option value=""&gt;Select time&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;18:00&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;19:00&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;20:00&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;21:00&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;22:00&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/select&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;label&gt;Name&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1">&lt;select id="user"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option value=""&gt;Select your name&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;So&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;Daito&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;Takuma&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;Hozumi&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;Kosuke&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;Rio&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;Kosei&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;option&gt;Masato&lt;/option&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/select&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;button onclick="reserve()"&gt;Reserve&lt;/button&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;script&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function reserve(){</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const date = document.getElementById("date").value;</span></p>
+<p class="p1"><span class="s1">const time = document.getElementById("time").value;</span></p>
+<p class="p1"><span class="s1">const user = document.getElementById("user").value;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">if(!date || !time || !user){</span></p>
+<p class="p1"><span class="s1">alert("Please select date, time, and name");</span></p>
+<p class="p1"><span class="s1">return;</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const url = "https://script.google.com/macros/s/AKfycbypaF4kzybUo9w0B81mnEWBWmnFLF1oGIZ9mIaUOdNSh-S8-iDBwmA1IWthpYyXRv_d/exec";</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">const data = {</span></p>
+<p class="p1"><span class="s1">date: date,</span></p>
+<p class="p1"><span class="s1">time: time,</span></p>
+<p class="p1"><span class="s1">user: user</span></p>
+<p class="p1"><span class="s1">};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">fetch(url,{</span></p>
+<p class="p1"><span class="s1">method:"POST",</span></p>
+<p class="p1"><span class="s1">body: JSON.stringify(data)</span></p>
+<p class="p1"><span class="s1">})</span></p>
+<p class="p1"><span class="s1">.then(response =&gt; response.text())</span></p>
+<p class="p1"><span class="s1">.then(result =&gt; {</span></p>
+<p class="p1"><span class="s1">alert("Reservation complete");</span></p>
+<p class="p1"><span class="s1">})</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">.catch(error =&gt; {</span></p>
+<p class="p1"><span class="s1">alert("Error sending reservation");</span></p>
+<p class="p1"><span class="s1">console.error(error);</span></p>
+<p class="p1"><span class="s1">});</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;/script&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
 </body>
 </html>

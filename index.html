@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta charset="UTF-8">
@@ -15,7 +16,7 @@ text-align:center;
 
 .container{
 background:white;
-width:360px;
+width:380px;
 margin:auto;
 margin-top:40px;
 padding:25px;
@@ -38,17 +39,12 @@ cursor:pointer;
 }
 
 button:hover{
-background:#45a049;
-}
-
-#message{
-margin-top:15px;
-font-weight:bold;
+background:#43a047;
 }
 
 .slot{
-padding:8px;
-margin-top:4px;
+padding:10px;
+margin-top:5px;
 border-radius:6px;
 color:white;
 }
@@ -65,31 +61,32 @@ background:#e53935;
 
 </head>
 
+
 <body>
 
 <div class="container">
 
 <h2>Laundry Reservation</h2>
 
+
 <label>Date</label>
-<input type="date" id="date" onchange="renderSlots()">
+<input type="date" id="date" onchange="loadSlots()">
 
 
 <label>Machine</label>
-<select id="machine" onchange="renderSlots()">
-<option value="">Select machine</option>
+<select id="machine" onchange="loadSlots()">
+
+<option value="">Select</option>
 <option value="Washer">Washer</option>
 <option value="Dryer">Dryer</option>
+
 </select>
-
-
-<label>Time</label>
-<select id="time"></select>
 
 
 <label>Name</label>
 <select id="user">
-<option value="">Select your name</option>
+
+<option value="">Select</option>
 <option>So</option>
 <option>Daito</option>
 <option>Takuma</option>
@@ -98,21 +95,21 @@ background:#e53935;
 <option>Rio</option>
 <option>Kosei</option>
 <option>Masato</option>
+
 </select>
 
 
-<button onclick="reserve()">Reserve</button>
+<div id="slots"></div>
 
 <div id="message"></div>
 
-<h3>Time Slots</h3>
-<div id="slots"></div>
-
 </div>
+
 
 <script>
 
-const url="https://script.google.com/macros/s/AKfycbypaF4kzybUo9w0B81mnEWBWmnFLF1oGIZ9mIaUOdNSh-S8-iDBwmA1IWthpYyXRv_d/exec";
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbzWq9BxRfhZxPzNfMRfFTy6py8DG-V19cihjskzGbdPqC8zg-ULBpbpHTHuqjiquoQY/exec";
+
 
 const washerTimes=[
 "06:30-07:10",
@@ -134,40 +131,40 @@ const dryerTimes=[
 "21:00-22:30"
 ];
 
-function renderSlots(){
+
+
+function loadSlots(){
 
 const machine=document.getElementById("machine").value;
 const date=document.getElementById("date").value;
 
 if(!machine || !date) return;
 
-const slotBox=document.getElementById("slots");
-slotBox.innerHTML="";
-
 let times=[];
 
 if(machine==="Washer") times=washerTimes;
 if(machine==="Dryer") times=dryerTimes;
 
-const timeSelect=document.getElementById("time");
-timeSelect.innerHTML="";
+const slotsDiv=document.getElementById("slots");
+slotsDiv.innerHTML="";
 
 times.forEach(t=>{
 
-const option=document.createElement("option");
-option.value=t;
-option.textContent=t;
-timeSelect.appendChild(option);
+const safeId=t.replace(/:/g,"");
 
 const div=document.createElement("div");
 div.className="slot free";
-div.id="slot-"+t;
-div.innerText=t+" (Free)";
-slotBox.appendChild(div);
+div.innerText=t+"  (Free)";
+div.onclick=function(){reserve(t)};
+
+div.id="slot-"+safeId;
+
+slotsDiv.appendChild(div);
 
 });
 
-fetch(url)
+
+fetch(SCRIPT_URL)
 .then(res=>res.json())
 .then(data=>{
 
@@ -176,15 +173,19 @@ data.forEach(r=>{
 const m=r[0];
 const d=r[1];
 const t=r[2];
-const user=r[3];
+const name=r[3];
 
 if(m===machine && d===date){
 
-const slot=document.getElementById("slot-"+t);
+const safeId=t.replace(/:/g,"");
+const slot=document.getElementById("slot-"+safeId);
 
 if(slot){
+
 slot.className="slot taken";
-slot.innerText=t+" (Reserved by "+user+")";
+slot.innerText=t+"  (Reserved by "+name+")";
+slot.onclick=null;
+
 }
 
 }
@@ -195,40 +196,66 @@ slot.innerText=t+" (Reserved by "+user+")";
 
 }
 
-function reserve(){
+
+
+function reserve(time){
 
 const machine=document.getElementById("machine").value;
 const date=document.getElementById("date").value;
-const time=document.getElementById("time").value;
 const user=document.getElementById("user").value;
 
-if(!machine || !date || !time || !user){
-document.getElementById("message").innerText="Please fill all fields";
+if(!machine || !date || !user){
+
+document.getElementById("message").innerText="Fill all fields";
 return;
+
 }
 
-fetch(url,{
+
+fetch(SCRIPT_URL,{
+
 method:"POST",
-body:JSON.stringify({machine,date,time,user})
+
+body:JSON.stringify({
+
+machine:machine,
+date:date,
+time:time,
+user:user
+
 })
+
+})
+
 .then(res=>res.json())
 .then(data=>{
 
 if(data.status==="OK"){
-document.getElementById("message").innerText="OK: Reservation completed";
-renderSlots();
-}else{
-document.getElementById("message").innerText="Reservation failed";
+
+document.getElementById("message").innerText="Reservation OK";
+loadSlots();
+
+}
+
+else{
+
+document.getElementById("message").innerText=data.message;
+
 }
 
 })
+
 .catch(()=>{
-document.getElementById("message").innerText="Error sending reservation";
+
+document.getElementById("message").innerText="Connection error";
+
 });
 
 }
 
+
 </script>
 
 </body>
+
 </html>

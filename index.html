@@ -1,78 +1,29 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 <meta charset="UTF-8">
 <title>Dorm Laundry Reservation</title>
-
 <style>
-
-body{
-font-family:Arial;
-background:#f4f4f4;
-text-align:center;
-}
-
-.container{
-background:white;
-width:380px;
-margin:auto;
-margin-top:40px;
-padding:25px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-}
-
-select,input{
-width:100%;
-padding:10px;
-margin-top:10px;
-font-size:16px;
-}
-
-.slot{
-padding:10px;
-margin-top:5px;
-border-radius:6px;
-color:white;
-cursor:pointer;
-}
-
-.free{
-background:#4CAF50;
-}
-
-.taken{
-background:#e53935;
-cursor:default;
-}
-
-#message{
-margin-top:15px;
-font-weight:bold;
-}
-
+body{font-family:Arial;background:#f4f4f4;text-align:center;}
+.container{background:white;width:380px;margin:auto;margin-top:40px;padding:25px;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.1);} 
+select,input{width:100%;padding:10px;margin-top:10px;font-size:16px;}
+.slot{padding:10px;margin-top:5px;border-radius:6px;color:white;cursor:pointer;}
+.free{background:#4CAF50;}
+.taken{background:#e53935;cursor:default;}
+#message{margin-top:15px;font-weight:bold;}
 </style>
-
 </head>
-
-
 <body>
-
 <div class="container">
-
 <h2>Laundry Reservation</h2>
-
 <label>Date</label>
 <input type="date" id="date" onchange="loadSlots()">
-
 <label>Machine</label>
 <select id="machine" onchange="loadSlots()">
 <option value="">Select</option>
 <option value="Washer">Washer</option>
 <option value="Dryer">Dryer</option>
 </select>
-
 <label>Name</label>
 <select id="user">
 <option value="">Select</option>
@@ -85,161 +36,94 @@ font-weight:bold;
 <option>Kosei</option>
 <option>Masato</option>
 </select>
-
 <div id="slots"></div>
-
 <div id="message"></div>
-
 </div>
-
-
 <script>
-
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbypaF4kzybUo9w0B81mnEWBWmnFLF1oGIZ9mIaUOdNSh-S8-iDBwmA1IWthpYyXRv_d/exec";
 
+const washerTimes=["06:30-07:10","07:10-07:50","17:00-17:40","17:40-18:20","18:20-19:00","19:00-19:40","19:40-20:20","20:20-21:00","21:00-21:40","21:40-22:20"];
 
-const washerTimes=[
-"06:30-07:10",
-"07:10-07:50",
-"17:00-17:40",
-"17:40-18:20",
-"18:20-19:00",
-"19:00-19:40",
-"19:40-20:20",
-"20:20-21:00",
-"21:00-21:40",
-"21:40-22:20"
-];
-
-const dryerTimes=[
-"06:30-08:00",
-"17:00-19:00",
-"19:00-21:00",
-"21:00-22:30"
-];
+const dryerTimes=["06:30-08:00","17:00-19:00","19:00-21:00","21:00-22:30"];
 
 window.onload=function(){
-
 const today=new Date().toISOString().split("T")[0];
 document.getElementById("date").value=today;
-
 };
 
-
 function loadSlots(){
-
 const machine=document.getElementById("machine").value;
 const date=document.getElementById("date").value;
-
-if(!machine || !date) return;
-
+if(!machine||!date)return;
 let times=[];
-
-if(machine==="Washer") times=washerTimes;
-if(machine==="Dryer") times=dryerTimes;
-
+if(machine==="Washer")times=washerTimes;
+if(machine==="Dryer")times=dryerTimes;
 const slotsDiv=document.getElementById("slots");
 slotsDiv.innerHTML="";
 
 times.forEach(t=>{
-
 const safeId=t.replace(/:/g,"");
-
 const div=document.createElement("div");
 div.className="slot free";
 div.innerText=t+" (Free)";
 div.onclick=function(){reserve(t)};
 div.id="slot-"+safeId;
-
 slotsDiv.appendChild(div);
-
 });
-
 
 fetch(SCRIPT_URL)
 .then(res=>res.json())
 .then(data=>{
-
 data.forEach(r=>{
-
 const m=r[0];
 const d=r[1];
 const t=r[2];
 const name=r[3];
-
-if(m===machine && d===date){
-
+if(m===machine&&d===date){
 const safeId=t.replace(/:/g,"");
 const slot=document.getElementById("slot-"+safeId);
-
 if(slot){
-
 slot.className="slot taken";
 slot.innerText=t+" (Reserved by "+name+")";
 slot.onclick=null;
-
 }
-
 }
-
 });
-
 });
-
 }
-
-
 
 function reserve(time){
-
 const machine=document.getElementById("machine").value;
 const date=document.getElementById("date").value;
 const user=document.getElementById("user").value;
-
-if(!machine || !date || !user){
-
+if(!machine||!date||!user){
 document.getElementById("message").innerText="Fill all fields";
 return;
-
 }
+
+const params=new URLSearchParams();
+params.append("machine",machine);
+params.append("date",date);
+params.append("time",time);
+params.append("user",user);
 
 fetch(SCRIPT_URL,{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-machine:machine,
-date:date,
-time:time,
-user:user
-})
+body:params
 })
 .then(res=>res.json())
 .then(data=>{
-
 if(data.status==="OK"){
-
 document.getElementById("message").innerText="Reservation OK";
 loadSlots();
-
 }else{
-
 document.getElementById("message").innerText=data.message;
-
 }
-
 })
 .catch(()=>{
-
 document.getElementById("message").innerText="Connection error";
-
 });
-
 }
-
 </script>
-
 </body>
-
 </html>

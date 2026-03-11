@@ -8,7 +8,7 @@
 <style>
 
 body{
-font-family:Arial;
+font-family:Arial, sans-serif;
 background:#f4f4f4;
 text-align:center;
 }
@@ -44,6 +44,12 @@ background:#45a049;
 .reservations{
 margin-top:30px;
 text-align:left;
+}
+
+#message{
+margin-top:15px;
+font-weight:bold;
+color:green;
 }
 
 </style>
@@ -90,6 +96,8 @@ text-align:left;
 
 <button onclick="reserve()">Reserve</button>
 
+<div id="message"></div>
+
 
 <div class="reservations">
 
@@ -127,10 +135,10 @@ const dryerTimes = [
 
 function updateTimes(){
 
-const machine = document.getElementById("machine").value;
-const timeSelect = document.getElementById("time");
+const machine=document.getElementById("machine").value;
+const timeSelect=document.getElementById("time");
 
-timeSelect.innerHTML = '<option value="">Select time</option>';
+timeSelect.innerHTML='<option value="">Select time</option>';
 
 let times=[];
 
@@ -160,7 +168,7 @@ const time=document.getElementById("time").value;
 const user=document.getElementById("user").value;
 
 if(!machine || !date || !time || !user){
-alert("Fill all fields");
+document.getElementById("message").innerText="Please fill all fields";
 return;
 }
 
@@ -168,10 +176,19 @@ fetch(url,{
 method:"POST",
 body:JSON.stringify({machine,date,time,user})
 })
-.then(res=>res.text())
-.then(()=>{
-alert("Reservation complete");
+.then(res=>res.json())
+.then(data=>{
+
+if(data.status==="OK"){
+document.getElementById("message").innerText="OK: Reservation completed";
 loadReservations();
+}else{
+document.getElementById("message").innerText="Reservation failed";
+}
+
+})
+.catch(()=>{
+document.getElementById("message").innerText="Error sending reservation";
 });
 
 }

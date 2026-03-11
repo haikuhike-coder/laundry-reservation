@@ -8,14 +8,14 @@
 <style>
 
 body{
-font-family:Arial, sans-serif;
+font-family:Arial;
 background:#f4f4f4;
 text-align:center;
 }
 
 .container{
 background:white;
-width:340px;
+width:360px;
 margin:auto;
 margin-top:40px;
 padding:25px;
@@ -41,15 +41,24 @@ button:hover{
 background:#45a049;
 }
 
-.reservations{
-margin-top:30px;
-text-align:left;
-}
-
 #message{
 margin-top:15px;
 font-weight:bold;
-color:green;
+}
+
+.slot{
+padding:8px;
+margin-top:4px;
+border-radius:6px;
+color:white;
+}
+
+.free{
+background:#4CAF50;
+}
+
+.taken{
+background:#e53935;
 }
 
 </style>
@@ -63,11 +72,11 @@ color:green;
 <h2>Laundry Reservation</h2>
 
 <label>Date</label>
-<input type="date" id="date">
+<input type="date" id="date" onchange="renderSlots()">
 
 
 <label>Machine</label>
-<select id="machine" onchange="updateTimes()">
+<select id="machine" onchange="renderSlots()">
 <option value="">Select machine</option>
 <option value="Washer">Washer</option>
 <option value="Dryer">Dryer</option>
@@ -75,9 +84,7 @@ color:green;
 
 
 <label>Time</label>
-<select id="time">
-<option value="">Select time</option>
-</select>
+<select id="time"></select>
 
 
 <label>Name</label>
@@ -98,22 +105,16 @@ color:green;
 
 <div id="message"></div>
 
-
-<div class="reservations">
-
-<h3>Current Reservations</h3>
-
-<ul id="list"></ul>
-
-</div>
+<h3>Time Slots</h3>
+<div id="slots"></div>
 
 </div>
 
 <script>
 
-const url = "https://script.google.com/macros/s/AKfycbypaF4kzybUo9w0B81mnEWBWmnFLF1oGIZ9mIaUOdNSh-S8-iDBwmA1IWthpYyXRv_d/exec";
+const url="https://script.google.com/macros/s/AKfycbypaF4kzybUo9w0B81mnEWBWmnFLF1oGIZ9mIaUOdNSh-S8-iDBwmA1IWthpYyXRv_d/exec";
 
-const washerTimes = [
+const washerTimes=[
 "06:30-07:10",
 "07:10-07:50",
 "17:00-17:40",
@@ -126,39 +127,73 @@ const washerTimes = [
 "21:40-22:20"
 ];
 
-const dryerTimes = [
+const dryerTimes=[
 "06:30-08:00",
 "17:00-19:00",
 "19:00-21:00",
 "21:00-22:30"
 ];
 
-function updateTimes(){
+function renderSlots(){
 
 const machine=document.getElementById("machine").value;
-const timeSelect=document.getElementById("time");
+const date=document.getElementById("date").value;
 
-timeSelect.innerHTML='<option value="">Select time</option>';
+if(!machine || !date) return;
+
+const slotBox=document.getElementById("slots");
+slotBox.innerHTML="";
 
 let times=[];
 
-if(machine==="Washer"){
-times=washerTimes;
-}
+if(machine==="Washer") times=washerTimes;
+if(machine==="Dryer") times=dryerTimes;
 
-if(machine==="Dryer"){
-times=dryerTimes;
-}
+const timeSelect=document.getElementById("time");
+timeSelect.innerHTML="";
 
 times.forEach(t=>{
+
 const option=document.createElement("option");
 option.value=t;
 option.textContent=t;
 timeSelect.appendChild(option);
+
+const div=document.createElement("div");
+div.className="slot free";
+div.id="slot-"+t;
+div.innerText=t+" (Free)";
+slotBox.appendChild(div);
+
 });
+
+fetch(url)
+.then(res=>res.json())
+.then(data=>{
+
+data.forEach(r=>{
+
+const m=r[0];
+const d=r[1];
+const t=r[2];
+const user=r[3];
+
+if(m===machine && d===date){
+
+const slot=document.getElementById("slot-"+t);
+
+if(slot){
+slot.className="slot taken";
+slot.innerText=t+" (Reserved by "+user+")";
+}
 
 }
 
+});
+
+});
+
+}
 
 function reserve(){
 
@@ -181,7 +216,7 @@ body:JSON.stringify({machine,date,time,user})
 
 if(data.status==="OK"){
 document.getElementById("message").innerText="OK: Reservation completed";
-loadReservations();
+renderSlots();
 }else{
 document.getElementById("message").innerText="Reservation failed";
 }
@@ -192,32 +227,6 @@ document.getElementById("message").innerText="Error sending reservation";
 });
 
 }
-
-
-function loadReservations(){
-
-fetch(url)
-.then(res=>res.json())
-.then(data=>{
-
-const list=document.getElementById("list");
-list.innerHTML="";
-
-data.forEach(r=>{
-
-const li=document.createElement("li");
-
-li.textContent=r[0]+" | "+r[1]+" | "+r[2]+" | "+r[3];
-
-list.appendChild(li);
-
-});
-
-});
-
-}
-
-loadReservations();
 
 </script>
 

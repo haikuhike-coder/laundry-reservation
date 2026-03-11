@@ -2,9 +2,8 @@
 <html>
 
 <head>
-
 <meta charset="UTF-8">
-<title>Laundry Reservation</title>
+<title>Dorm Laundry Reservation</title>
 
 <style>
 
@@ -24,22 +23,11 @@ border-radius:10px;
 box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
-select,input,button{
+select,input{
 width:100%;
 padding:10px;
 margin-top:10px;
 font-size:16px;
-}
-
-button{
-background:#4CAF50;
-color:white;
-border:none;
-cursor:pointer;
-}
-
-button:hover{
-background:#43a047;
 }
 
 .slot{
@@ -47,6 +35,7 @@ padding:10px;
 margin-top:5px;
 border-radius:6px;
 color:white;
+cursor:pointer;
 }
 
 .free{
@@ -55,6 +44,12 @@ background:#4CAF50;
 
 .taken{
 background:#e53935;
+cursor:default;
+}
+
+#message{
+margin-top:15px;
+font-weight:bold;
 }
 
 </style>
@@ -68,24 +63,18 @@ background:#e53935;
 
 <h2>Laundry Reservation</h2>
 
-
 <label>Date</label>
 <input type="date" id="date" onchange="loadSlots()">
 
-
 <label>Machine</label>
 <select id="machine" onchange="loadSlots()">
-
 <option value="">Select</option>
 <option value="Washer">Washer</option>
 <option value="Dryer">Dryer</option>
-
 </select>
-
 
 <label>Name</label>
 <select id="user">
-
 <option value="">Select</option>
 <option>So</option>
 <option>Daito</option>
@@ -95,9 +84,7 @@ background:#e53935;
 <option>Rio</option>
 <option>Kosei</option>
 <option>Masato</option>
-
 </select>
-
 
 <div id="slots"></div>
 
@@ -108,7 +95,7 @@ background:#e53935;
 
 <script>
 
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbzWq9BxRfhZxPzNfMRfFTy6py8DG-V19cihjskzGbdPqC8zg-ULBpbpHTHuqjiquoQY/exec";
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbypaF4kzybUo9w0B81mnEWBWmnFLF1oGIZ9mIaUOdNSh-S8-iDBwmA1IWthpYyXRv_d/exec";
 
 
 const washerTimes=[
@@ -131,6 +118,12 @@ const dryerTimes=[
 "21:00-22:30"
 ];
 
+window.onload=function(){
+
+const today=new Date().toISOString().split("T")[0];
+document.getElementById("date").value=today;
+
+};
 
 
 function loadSlots(){
@@ -154,9 +147,8 @@ const safeId=t.replace(/:/g,"");
 
 const div=document.createElement("div");
 div.className="slot free";
-div.innerText=t+"  (Free)";
+div.innerText=t+" (Free)";
 div.onclick=function(){reserve(t)};
-
 div.id="slot-"+safeId;
 
 slotsDiv.appendChild(div);
@@ -183,7 +175,7 @@ const slot=document.getElementById("slot-"+safeId);
 if(slot){
 
 slot.className="slot taken";
-slot.innerText=t+"  (Reserved by "+name+")";
+slot.innerText=t+" (Reserved by "+name+")";
 slot.onclick=null;
 
 }
@@ -211,22 +203,18 @@ return;
 
 }
 
-
 fetch(SCRIPT_URL,{
-
 method:"POST",
-
+headers:{
+"Content-Type":"application/json"
+},
 body:JSON.stringify({
-
 machine:machine,
 date:date,
 time:time,
 user:user
-
 })
-
 })
-
 .then(res=>res.json())
 .then(data=>{
 
@@ -235,16 +223,13 @@ if(data.status==="OK"){
 document.getElementById("message").innerText="Reservation OK";
 loadSlots();
 
-}
-
-else{
+}else{
 
 document.getElementById("message").innerText=data.message;
 
 }
 
 })
-
 .catch(()=>{
 
 document.getElementById("message").innerText="Connection error";
@@ -252,7 +237,6 @@ document.getElementById("message").innerText="Connection error";
 });
 
 }
-
 
 </script>
 
